@@ -208,8 +208,10 @@ def data_is_kept_between_runs(d):
 
 
 @test
-def defect_d1_letters_as_book_id_crash_the_program(d):       # D1 (known defect)
-    return "ValueError" in run(d, BORROW, "S1", "abc")
+def defect_d1_fixed_letters_as_book_id_are_refused(d):       # D1 (fixed in commit 06)
+    out = run(d, BORROW, "S1", "abc", BORROW, "S1", "1")
+    return ("Book ID must be a number" in out and "Book borrowed." in out
+            and "Traceback" not in out)
 
 
 def main():

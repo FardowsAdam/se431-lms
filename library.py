@@ -9,10 +9,14 @@ from library_service import LibraryError
 
 
 def ask_member_and_book():
-    """RF-4: one function instead of the input lines repeated in the old main()."""
+    """RF-4: one function instead of the input lines repeated in the old main().
+    D1 fix (commit 06): letters typed as a Book ID are refused instead of crashing."""
     member_id = input("Member ID: ")
-    book_id = int(input("Book ID: "))
-    return member_id, book_id
+    try:
+        return member_id, int(input("Book ID: "))
+    except ValueError:
+        print("Book ID must be a number")
+        return member_id, None
 
 
 def show_search(db):
@@ -23,6 +27,8 @@ def show_search(db):
 
 def do_borrow(db):
     member_id, book_id = ask_member_and_book()
+    if book_id is None:
+        return
     try:
         due = service.borrow(db, member_id, book_id)
         print("Book borrowed. Due:", due.date())
@@ -32,6 +38,8 @@ def do_borrow(db):
 
 def do_return(db):
     member_id, book_id = ask_member_and_book()
+    if book_id is None:
+        return
     try:
         fine = service.return_book(db, member_id, book_id)
         print("Book returned")
