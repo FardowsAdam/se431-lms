@@ -1,0 +1,25 @@
+digraph legacy {
+  graph [rankdir=LR, fontname="Helvetica", nodesep=0.25, ranksep=0.6, bgcolor="white", label="Legacy LMS: one module, no layers", labelloc=t, fontsize=16];
+  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=13, fillcolor="#F2F4F7", color="#667085"];
+  edge  [fontname="Helvetica", fontsize=11, color="#667085"];
+  user [label="Librarian\n(console)", shape=oval, fillcolor="#E0EAFF", color="#3538CD"];
+  subgraph cluster_mod {
+    label="library.py – UI + business rules + SQL in the same functions"; style="rounded,dashed"; color="#B42318"; fontcolor="#B42318"; fontsize=13;
+    main   [label="main()\nmenu loop · input()\nint() parsing", fillcolor="#FEF3F2"];
+    setup  [label="setup()\nconnect · DDL · seed data"];
+    search [label="search_books()\nSQL LIKE · print"];
+    borrow [label="borrow()\n5 rules · INSERT/UPDATE · print"];
+    ret    [label="return_book()\nfine · UPDATE · print"];
+    g      [label="global\nDB = \"library.db\"", shape=note, fillcolor="#FFFAEB", color="#B54708"];
+  }
+  db  [label="SQLite library.db\nmembers · books · loans", shape=cylinder, fillcolor="#ECFDF3", color="#067647"];
+  dt  [label="datetime.now()\nsystem clock", shape=component, fillcolor="#FFFFFF"];
+  user -> main [label="stdin/stdout"];
+  main -> setup; main -> search; main -> borrow; main -> ret;
+  setup -> g [style=dashed, arrowhead=none];
+  setup -> db [label="CREATE, INSERT"];
+  search -> db [label="SELECT"];
+  borrow -> db [label="SELECT ×3, INSERT, UPDATE"];
+  ret -> db [label="SELECT, UPDATE ×2"];
+  borrow -> dt; ret -> dt;
+}

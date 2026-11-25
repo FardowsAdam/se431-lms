@@ -1,0 +1,26 @@
+digraph er {
+  graph [rankdir=LR, fontname="Helvetica", bgcolor="white", label="Legacy schema (no foreign keys, no NOT NULL / CHECK constraints)", labelloc=t, fontsize=13];
+  node [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge [fontname="Helvetica", fontsize=9, color="#667085", style=dashed];
+  members [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#667085">
+    <tr><td bgcolor="#E0EAFF"><b>members</b></td></tr>
+    <tr><td align="left"><u>id</u> TEXT PK</td></tr>
+    <tr><td align="left">name TEXT</td></tr>
+    <tr><td align="left">status TEXT  ('ACTIVE' …)</td></tr></table>>];
+  books [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#667085">
+    <tr><td bgcolor="#E0EAFF"><b>books</b></td></tr>
+    <tr><td align="left"><u>id</u> INTEGER PK</td></tr>
+    <tr><td align="left">title TEXT</td></tr>
+    <tr><td align="left">author TEXT</td></tr>
+    <tr><td align="left" bgcolor="#FEF3F2">available INTEGER (0/1)</td></tr></table>>];
+  loans [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#667085">
+    <tr><td bgcolor="#E0EAFF"><b>loans</b></td></tr>
+    <tr><td align="left"><u>id</u> INTEGER PK AUTOINCREMENT</td></tr>
+    <tr><td align="left">member_id TEXT  (implicit FK)</td></tr>
+    <tr><td align="left">book_id INTEGER  (implicit FK)</td></tr>
+    <tr><td align="left">borrow_date TEXT (ISO)</td></tr>
+    <tr><td align="left">due_date TEXT (ISO)</td></tr>
+    <tr><td align="left">returned INTEGER (0/1)</td></tr></table>>];
+  members -> loans [label="1 .. *"];
+  books -> loans [label="1 .. *"];
+}
