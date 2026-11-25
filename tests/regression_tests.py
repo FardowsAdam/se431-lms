@@ -67,9 +67,9 @@ def search_by_title(d):                                      # R6
 
 
 @test
-def search_shows_borrowed_book_as_unavailable(d):            # R3, R6
+def search_shows_borrowed_book_as_unavailable(d):            # R3, R6 (MR-01: copy count shown)
     run(d, BORROW, "S1", "3")
-    return "3 Design Patterns - Gamma et al. Available: False" in run(d, SEARCH, "Design")
+    return "3 Design Patterns - Gamma et al. Available: 0 of 1 copies" in run(d, SEARCH, "Design")
 
 
 # ----------------------------------------------------------------- R1-R4 borrow
@@ -156,6 +156,43 @@ def suspended_member_can_still_return(d):                    # BR-9
 def returned_book_can_be_borrowed_again(d):                  # BR-10
     out = run(d, BORROW, "S1", "3", RETURN, "S1", "3", BORROW, "S2", "3")
     return out.count("Book borrowed.") == 2
+
+
+# ----------------------------------------------------------------- MR-01 copies
+@test
+def copies_are_shared_until_none_left(d):                    # MR-01
+    out = run(d, BORROW, "S1", "2", BORROW, "S2", "2", SEARCH, "Refactoring")
+    return out.count("Book borrowed.") == 2 and "Available: 0 of 2 copies" in out
+
+
+@test
+def member_cannot_hold_two_copies_of_one_book(d):            # MR-01, BR-14
+    out = run(d, BORROW, "S1", "1", BORROW, "S1", "1", SEARCH, "Clean")
+    return "Member already has a copy of this book" in out and "Available: 2 of 3 copies" in out
+
+
+@test
+def return_puts_one_copy_back(d):                            # MR-01
+    out = run(d, BORROW, "S1", "2", BORROW, "S2", "2", RETURN, "S1", "2", SEARCH, "Refactoring")
+    return "Available: 1 of 2 copies" in out
+
+
+@test
+def old_database_is_upgraded(d):                             # MR-01 (existing data kept)
+    con = sqlite3.connect(os.path.join(d, "library.db"))     # a database made by the old version
+    con.executescript("""
+        CREATE TABLE members(id TEXT PRIMARY KEY, name TEXT, status TEXT);
+        CREATE TABLE books(id INTEGER PRIMARY KEY, title TEXT, author TEXT, available INTEGER);
+        CREATE TABLE loans(id INTEGER PRIMARY KEY AUTOINCREMENT, member_id TEXT, book_id INTEGER,
+                           borrow_date TEXT, due_date TEXT, returned INTEGER);
+        INSERT INTO members VALUES ('S1', 'Ali', 'ACTIVE');
+        INSERT INTO books VALUES (1, 'Clean Code', 'Robert Martin', 0);
+        INSERT INTO loans (member_id, book_id, borrow_date, due_date, returned)
+            VALUES ('S1', 1, '2026-11-01T10:00:00', '2099-01-01T10:00:00', 0);""")
+    con.close()
+    out = run(d, SEARCH, "Clean", RETURN, "S1", "1", SEARCH, "Clean")
+    return ("Available: 0 of 1 copies" in out and "Book returned" in out
+            and "Available: 1 of 1 copies" in out)
 
 
 # ----------------------------------------------------------------- menu / data

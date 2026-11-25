@@ -1,0 +1,15 @@
+digraph mr02 {
+  graph [rankdir=TB, fontname="Helvetica", bgcolor="white", nodesep=0.5, ranksep=0.45, label="MR-02 design: one database layer between the program and the database", labelloc=t, fontsize=16];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=13, fillcolor="#F2F4F7", color="#667085"];
+  edge [fontname="Helvetica", fontsize=11, color="#667085"];
+  app [label="library.py\nmenu + business rules\n(no SQL)"];
+  dbl [label="library_db.py – class LibraryDatabase\nfind_member · find_book · search_books\ncount_open_loans · find_open_loan · add_loan · close_loan\n(all SQL is here)", fillcolor="#E0EAFF", color="#3538CD"];
+  sq [label="SQLite\nlibrary.db", shape=cylinder, fillcolor="#ECFDF3", color="#067647"];
+  other [label="new database\n(e.g. MySQL)", shape=cylinder, style="dashed,filled", fillcolor="#FFFFFF"];
+  newcls [label="replacement class with the\nsame methods (future)", style="rounded,dashed", fillcolor="#FFFFFF"];
+  app -> dbl [label="method calls"];
+  dbl -> sq;
+  app -> newcls [style=dashed, label="or"];
+  newcls -> other [style=dashed];
+  {rank=same; dbl; newcls}
+}
