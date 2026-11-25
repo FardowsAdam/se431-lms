@@ -1,0 +1,11 @@
+digraph newarch {
+  graph [rankdir=TB, fontname="Helvetica", bgcolor="white", nodesep=0.4, ranksep=0.4, label="Reengineered architecture: three layers, each with one responsibility", labelloc=t, fontsize=16];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=13, fillcolor="#F2F4F7", color="#667085", width=4.2];
+  edge [fontname="Helvetica", fontsize=11, color="#667085"];
+  user [label="Librarian (console)", shape=oval, fillcolor="#E0EAFF", color="#3538CD", width=2];
+  ui [label="library.py – menu\ninput() · print() · ask_member_and_book()"];
+  svc [label="library_service.py – business rules\nborrow · return_book · search_books · calculate_fine\nMAX_BOOKS=3 · LOAN_DAYS=14 · FINE_PER_DAY=1 · LibraryError", fillcolor="#E0EAFF", color="#3538CD"];
+  dbl [label="library_db.py – class LibraryDatabase\nall SQL (find_member, add_loan, close_loan …)"];
+  db [label="SQLite library.db\nmembers · books (copies) · loans", shape=cylinder, fillcolor="#ECFDF3", color="#067647", width=3];
+  user -> ui -> svc -> dbl -> db;
+}
