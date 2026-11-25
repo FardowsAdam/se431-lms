@@ -1,0 +1,20 @@
+digraph fm {
+  graph [rankdir=LR, fontname="Helvetica", bgcolor="white", nodesep=0.12, ranksep=0.45, label="Feature diagram (FODA) – campus lending domain: Library + Equipment\n● mandatory   ○ optional   XOR = choose exactly one", labelloc=t, fontsize=13];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, fillcolor="#F2F4F7", color="#667085", margin="0.08,0.04"];
+  edge [color="#344054", arrowsize=0.7];
+  root [label="Campus Lending System", fillcolor="#E0EAFF", color="#3538CD", fontsize=12];
+  bor [label="Borrower management"]; cat [label="Catalogue"]; unit [label="Unit tracking"]; lend [label="Borrowing"]; ret [label="Return"]; sto [label="Storage"]; res [label="Reservation", style="rounded,dashed", fillcolor="#FFFFFF"];
+  root -> bor [arrowhead=dot]; root -> cat [arrowhead=dot]; root -> unit [arrowhead=dot]; root -> lend [arrowhead=dot]; root -> ret [arrowhead=dot]; root -> sto [arrowhead=dot]; root -> res [arrowhead=odot];
+  st [label="Active status check"]; bc [label="Borrower categories\n(student / staff)", fillcolor="#FFFAEB"];
+  bor -> st [arrowhead=dot]; bor -> bc [arrowhead=odot];
+  se [label="Text search"]; desc [label="Item description\nXOR", fillcolor="#FFFAEB"]; d1 [label="Book: title, author"]; d2 [label="Equipment: category,\nmodel"];
+  cat -> se [arrowhead=dot]; cat -> desc [arrowhead=dot]; desc -> d1 [arrowhead=none, style=dashed]; desc -> d2 [arrowhead=none, style=dashed];
+  u1 [label="Counted copies/units"]; u2 [label="Serial-tracked units", style="rounded,dashed", fillcolor="#FFFFFF"];
+  unit -> u1 [arrowhead=dot]; unit -> u2 [arrowhead=odot];
+  lim [label="Open-loan limit"]; per [label="Loan period\nXOR", fillcolor="#FFFAEB"]; p1 [label="Fixed 14 days"]; p2 [label="Per category\n(hours / days)"]; rules [label="Eligibility rules\n(e.g. staff only)", fillcolor="#FFFAEB"]; once [label="One unit per item\nper borrower"];
+  lend -> lim [arrowhead=dot]; lend -> per [arrowhead=dot]; lend -> once [arrowhead=dot]; lend -> rules [arrowhead=odot]; per -> p1 [arrowhead=none, style=dashed]; per -> p2 [arrowhead=none, style=dashed];
+  fine [label="Late fine\nXOR", fillcolor="#FFFAEB"]; f1 [label="Per day"]; f2 [label="Per hour"]; insp [label="Condition inspection", style="rounded,dashed", fillcolor="#FFFFFF"];
+  ret -> fine [arrowhead=dot]; ret -> insp [arrowhead=odot]; fine -> f1 [arrowhead=none, style=dashed]; fine -> f2 [arrowhead=none, style=dashed];
+  eng [label="Engine\nXOR", fillcolor="#FFFAEB"]; s1 [label="SQLite"]; s3 [label="Other RDBMS", style="rounded,dashed", fillcolor="#FFFFFF"];
+  sto -> eng [arrowhead=dot]; eng -> s1 [arrowhead=none, style=dashed]; eng -> s3 [arrowhead=none, style=dashed];
+}

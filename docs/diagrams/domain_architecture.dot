@@ -1,0 +1,17 @@
+digraph arch {
+  graph [rankdir=TB, fontname="Helvetica", bgcolor="white", nodesep=0.35, ranksep=0.45, label="Proposed reusable domain architecture (domain design)", labelloc=t, fontsize=17, compound=true, newrank=true];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=13, fillcolor="#F2F4F7", color="#667085"];
+  edge [color="#667085", fontname="Helvetica", fontsize=11];
+  subgraph cluster_lib { label="Library system (application engineering)"; style="rounded"; color="#3538CD"; fontcolor="#3538CD"; fontsize=14;
+    lcfg [label="settings: 14 days · max 3 books\nfine per day · words: Member, Book"]; }
+  subgraph cluster_eq { label="Equipment system (application engineering)"; style="rounded,dashed"; color="#067647"; fontcolor="#067647"; fontsize=14;
+    ecfg [label="settings per category: laptop 7 days,\nprojector 1 day, lab instrument 4 hours\nfine per hour · lab items: staff only"]; }
+  subgraph cluster_core { label="Reusable assets (domain implementation)"; style="rounded,filled"; fillcolor="#F9FAFB"; color="#344054"; fontsize=14;
+    ui [label="Generic menu\nSearch · Borrow · Return (wording from settings)"];
+    rules [label="Lending rules\ncheck borrower · check item · check limit\nrecord loan · calculate fine", fillcolor="#E0EAFF", color="#3538CD"];
+    data [label="Lending database layer\nborrowers · items (units) · loans"];
+    ui -> rules -> data;
+  }
+  lcfg -> ui [lhead=cluster_core, label="uses"];
+  ecfg -> ui [lhead=cluster_core, label="uses"];
+}
